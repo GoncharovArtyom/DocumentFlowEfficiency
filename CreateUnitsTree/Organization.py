@@ -5,7 +5,7 @@ import json as js
 from MyEncoder import MyEncoder
 
 class Organization(object):
-    def __init__(self, root = None):
+    def __init__(self, root: object = None) -> object:
         if (root == None):
             self.root = Unit.Unit("root",None,None,[],[])
         else:

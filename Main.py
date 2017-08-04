@@ -1,9 +1,13 @@
-import json
-import Unit
-import Employee
-import Organization
+import Stemmer
 import os
-import json as js
 
-organization = Organization.Organization.LoadFromJson(r"C:\Users\Артем\Documents\Диплом\DocumentFlowEffeciency\DocumentFlowEffeciency\org1.json")
+path = os.curdir + "/data/"
+listDir = os.listdir(path)
+
+for i in range(len(listDir)):
+    f = open(path + "/" + listDir)
+
+
+
+
         
