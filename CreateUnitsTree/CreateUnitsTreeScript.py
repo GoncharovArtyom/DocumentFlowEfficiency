@@ -3,7 +3,7 @@ import json as js
 import Organization
 import Unit
 from MyEncoder import MyEncoder
-from AdditionalFunctons import *
+from AdditionalFunctions import *
 
 path = r"../data"
 listDir = os.listdir(path)
