@@ -16,9 +16,10 @@ for i in range(len(listDir)):
     f = open(os.path.join(curPath, "resolution.json"), 'r')
     obj = js.load(f)
     f.close()
-    AddUnitsFromResolutionObj(obj, organization)
+    AddUnitsFromResolutionObj(obj, organization, curDir)
 
 organization.SaveToJson(os.path.join(os.curdir,"organization.json"))
+
     
     
 

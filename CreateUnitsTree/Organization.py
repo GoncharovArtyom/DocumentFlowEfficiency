@@ -13,15 +13,19 @@ class Organization(object):
 
     def __merge(self, targetUnit, unitToMerge):
         emp = unitToMerge.Employees[0]
+        flag = False
         for i in range(len(targetUnit.Employees)):
             if (emp.Id == targetUnit.Employees[i].Id):
-                return
-        targetUnit.Employees.append(emp)
+                flag = True
+                targetUnit.Employees[i].AddDocument(emp.Documents[0])
+                break
+        if not flag:
+            targetUnit.Employees.append(emp)
     
     @staticmethod
     def __from_json(jsonObject):
         if ('FirstName' in jsonObject):
-            return Employee.Employee(jsonObject["FirstName"], jsonObject["LastName"], jsonObject["Id"])
+            return Employee.Employee(jsonObject["FirstName"], jsonObject["LastName"], jsonObject["Id"], jsonObject["Documents"])
         if ('ParentId' in jsonObject):
             return Unit.Unit(jsonObject["Name"],jsonObject["Id"], jsonObject["ParentId"], jsonObject["Employees"], jsonObject["Children"])
         if("root" in jsonObject):
@@ -61,7 +65,7 @@ class Organization(object):
 
     def FindUnitById(self, id):
         q = []
-        q.append(root)
+        q.append(self.root)
         while (len(q)!=0):
             curUnit = q.pop(0)
             if (curUnit.Id == id):
@@ -69,6 +73,17 @@ class Organization(object):
             for i in range(len(curUnit.Children)):
                 q.append(curUnit.Children[i])
         return None
+
+    def GetAllUnits(self):
+        result = []
+        q = []
+        q.append(self.root)
+        while (len(q)!=0):
+            curUnit = q.pop(0)
+            for i in range(len(curUnit.Children)):
+                result.append(curUnit.Children[i])
+                q.append(curUnit.Children[i])
+        return result
 
 
 
