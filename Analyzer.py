@@ -13,6 +13,18 @@ def analyzer(text, stemmer):
 
     return str_list
 
+def dd_analyzer(text, stemmer):
+    s = delete_spaces_and_new_lines(text)
+    s = remove_punctuation(s)
+    s = s.lower()
+    s = remove_comments(s)
+    str_list = s.split(" ")
+    str_list = fix_incorrect_word_and_tokenize(str_list)
+    str_list = stemmer.stemWords(str_list)
+    str_list = remove_stop_words(str_list, stemmer)
+
+    return str_list
+
 
 def delete_spaces_and_new_lines(s):
     string = re.sub("\n+", " ", s)
@@ -31,10 +43,10 @@ def remove_punctuation(s):
 
 
 def fix_incorrect_word_and_tokenize(str_list):
-    russian_word_pattern = re.compile(r"^[а-я]+$")
+    word_pattern = re.compile(r"^[а-я]+$|^[a-z]+$")
     number_pattern = re.compile(r"^[0-9]+$")
     result_str_list = reduce(lambda list_, x: list_ if (len(x) <= 2) else (
-        list_ + [x] if (russian_word_pattern.match(x) is not None) else (
+        list_ + [x] if (word_pattern.match(x) is not None) else (
             list_ + ['number'] if (number_pattern.match(x) is not None) else list_)), str_list, [])
     return result_str_list
 
@@ -51,3 +63,7 @@ def remove_stop_words(str_list, stemmer):
     stop_words_re = re.compile("^" + "$|^".join(stop_words_list) + "$")
 
     return list(filter(lambda item: stop_words_re.search(item) is None, str_list))
+
+def remove_comments(s):
+    pattern = re.compile("\^G|\^H")
+    return pattern.sub('', s)

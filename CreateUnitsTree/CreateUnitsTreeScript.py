@@ -5,7 +5,7 @@ import Unit
 from MyEncoder import MyEncoder
 from AdditionalFunctions import *
 
-path = r"../data"
+path = r"../dms"
 listDir = os.listdir(path)
 organization = Organization.Organization()
 
@@ -18,7 +18,7 @@ for i in range(len(listDir)):
     f.close()
     AddUnitsFromResolutionObj(obj, organization, curDir)
 
-organization.SaveToJson(os.path.join(os.curdir,"organization.json"))
+organization.SaveToJson(os.path.join(r"../Files","dd_organization.json"))
 
     
     

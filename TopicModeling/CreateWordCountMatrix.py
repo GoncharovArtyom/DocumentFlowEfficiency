@@ -7,13 +7,13 @@ import re
 from time import time
 
 from scipy import io
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 
 from Analyzer import analyzer
 
 # Settings
 N_FEATURES = 10000
-SAVE_DIR = "../Files/VectorizedData"
+SAVE_DIR = "../Files/TopicModeling"
 DATA_DIR = "../Data"
 
 logging.basicConfig(level=logging.DEBUG, filename=os.path.join(SAVE_DIR, "logging.txt"),
@@ -52,7 +52,7 @@ print("-----------------------------------------------------------------------")
 print("Extracting features from the dataset.")
 stemmer = Stemmer.Stemmer("russian")
 t0 = time()
-vectorizer = TfidfVectorizer(max_df=0.5, max_features=N_FEATURES, min_df=2,
+vectorizer = CountVectorizer(max_df=0.5, max_features=N_FEATURES, min_df=2,
                              analyzer=lambda str_: analyzer(str_, stemmer))
 X = vectorizer.fit_transform(text_of_documents_list)
 
@@ -61,7 +61,12 @@ print("Finished in {}m {}s".format(math.floor((t1 - t0) / 60), math.floor((t1 - 
 print("n_samples: %d, n_features: %d" % X.shape)
 print()
 
+names = vectorizer.get_feature_names()
+
 # Save results
-io.mmwrite(os.path.join(SAVE_DIR, "TfidfMatrix{}Features".format(N_FEATURES)), X)
+io.mmwrite(os.path.join(SAVE_DIR, "CountWordMatrix{}Features".format(N_FEATURES)), X)
 with open(os.path.join(SAVE_DIR, "DocumentIds"), "wb") as f:
     pickle.dump(document_id_list, f)
+with open(os.path.join(SAVE_DIR, "CountWordMatrix{}FeatureNames".format(N_FEATURES)), "wb") as f:
+    pickle.dump(names, f)
+
