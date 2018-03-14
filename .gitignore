@@ -1,8 +1,5 @@
 Data/
 .idea/
-*/__pycache__
-CreateFeaturesTable/dict.json
-CreateFeaturesTable/dict.pkl
-CreateUnitsTree/organization.json
-entropy.json
+__pycache__
 Files/
+dms/

@@ -57,6 +57,19 @@ class WordCountDict(object):
         entropy = -entropy
         return entropy
 
+    def calc_zipf_entropy(self):
+        if self.Total == 0:
+            raise Exception
+
+        ZIPF_CONSTANT = 0.07
+        entropy = 0
+        num_dictinct_words = self.num_distinct_words
+        for i in range(num_dictinct_words):
+            p = ZIPF_CONSTANT / (i+1)
+            entropy = entropy + p * log(p, 2)
+        entropy = -entropy
+        return entropy
+
     @property
     def num_distinct_words(self):
         return len(self._dict.keys())
@@ -70,13 +83,13 @@ class WordCountDict(object):
         self._dict = {}
 
         for pair in old_dict.items():
-            if pair[1] > low_frequency_bound:
+            if pair[1] >= low_frequency_bound:
                 self.Total = self.Total + pair[1]
                 self._dict[pair[0]] = pair[1]
 
     def delete_words_with_freq_greater_than(self, high_frequency_bound):
         if (type(high_frequency_bound) == type(float)):
-            low_frequency_bound = round(self.Total * high_frequency_bound)
+            high_frequency_bound = round(self.Total * high_frequency_bound)
 
         old_dict = self._dict
         self.Total = 0
