@@ -1,17 +1,17 @@
 import re
+import string as string_module
 from functools import reduce
 
 
-def analyzer(text, stemmer):
-    s = delete_spaces_and_new_lines(text)
-    s = remove_punctuation(s)
-    s = s.lower()
-    str_list = s.split(" ")
-    str_list = fix_incorrect_word_and_tokenize(str_list)
-    str_list = stemmer.stemWords(str_list)
-    str_list = remove_stop_words(str_list, stemmer)
+def analyzer(text, stemmer, stop_words):
+    text = remove_punctuation(text)
+    text = text.lower()
+    words = text.split()
+    words = fix_incorrect_word_and_tokenize(words)
+    words = remove_stop_words(words, stop_words)
+    stem_words = stemmer.stemWords(words)
 
-    return str_list
+    return stem_words
 
 def dd_analyzer(text, stemmer):
     s = delete_spaces_and_new_lines(text)
@@ -34,12 +34,9 @@ def delete_spaces_and_new_lines(s):
     return string
 
 
-def remove_punctuation(s):
-    string = re.sub("\s\W", " ", s)
-    string = re.sub("\W\s", " ", string)
-    string = re.sub("\s\W\s", " ", string)
-    string = re.sub("_", " ", string)
-    return string
+def remove_punctuation(string):
+    remove_dict = {ord(char):None for char in string_module.punctuation}
+    return string.translate(remove_dict)
 
 
 def fix_incorrect_word_and_tokenize(str_list):
@@ -51,18 +48,9 @@ def fix_incorrect_word_and_tokenize(str_list):
     return result_str_list
 
 
-def remove_stop_words(str_list, stemmer):
-    stop_words_list = ["быть", "вот", "еще", "как", "нет", "они", "сказать", "только", "этот",
-                       "большой",
-                       "все", "говорить", "для", "который", "него", "них", "один", "оно", "ото",
-                       "свой",
-                       "тот", "что", "весь", "всей", "год", "знать", "мочь", "наш", "нее", "она",
-                       "оный",
-                       "себя", "такой", "это"]
-    stop_words_list = stemmer.stemWords(stop_words_list)
-    stop_words_re = re.compile("^" + "$|^".join(stop_words_list) + "$")
-
-    return list(filter(lambda item: stop_words_re.search(item) is None, str_list))
+def remove_stop_words(words, stop_words):
+    reg_ex = re.compile("^" + "$|^".join(stop_words) + "$")
+    return list(filter(lambda word: reg_ex.search(word) is None, words))
 
 def remove_comments(s):
     pattern = re.compile("\^G|\^H")
