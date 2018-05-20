@@ -12,8 +12,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from Analyzer import analyzer
 
 # Settings
-N_FEATURES = 10000
-N_DOCUMENTS = 10000
+N_FEATURES = 1000
+N_DOCUMENTS = 50000
 SAVE_DIR = "../Files/TopicModeling"
 DATA_DIR = "../Data"
 STOP_WORDS_PATH = "../Files/VectorizedData/stop_words.txt"
