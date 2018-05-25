@@ -13,16 +13,19 @@ from Analyzer import analyzer
 
 # Settings
 N_FEATURES = 1000
-N_DOCUMENTS = 1000
+N_DOCUMENTS = 10000
 SAVE_DIR = "../Files/DataPreprocessing"
 DATA_DIR = "../Data"
 STOP_WORDS_PATH = "../Files/VectorizedData/stop_words.txt"
 FILE_TEMPLATE = "{name}_{n_docs}documents_{n_feats}features"
 
-VW_FILE_NAME = os.path.join(SAVE_DIR, FILE_TEMPLATE.format(name="VW", n_docs=N_DOCUMENTS,
+VW_FILE_NAME = os.path.join(SAVE_DIR, FILE_TEMPLATE.format(name="VW_1", n_docs=N_DOCUMENTS,
                                                    n_feats=N_FEATURES))
 VOCAB_FILE_NAME = os.path.join(SAVE_DIR, FILE_TEMPLATE.format(name="vocab.", n_docs=N_DOCUMENTS,
                                                n_feats=N_FEATURES) + ".txt")
+ID_TO_ROW_FILE_NAME = os.path.join(SAVE_DIR, FILE_TEMPLATE.format(name="id_to_row",
+                                                                  n_docs=N_DOCUMENTS,
+                                                                  n_feats=N_FEATURES))
 
 logging.basicConfig(level=logging.DEBUG, filename=os.path.join(SAVE_DIR, "logging.txt"),
                     filemode="w")
@@ -35,6 +38,8 @@ stop_words = open(STOP_WORDS_PATH, "r").readlines()
 stemmer = Stemmer.Stemmer("russian")
 
 words = set()
+id_to_row = {}
+row_id = 0
 
 print("Loading data...")
 t0 = time()
@@ -56,17 +61,21 @@ with open(VW_FILE_NAME, "w") as vw_file:
             if not tokens:
                 logging.error("No tokens inside txt file in {} directory".format(dir_))
                 continue
-            counter = Counter(tokens)
             vw_file.write(dir_)
             for token in tokens:
                 vw_file.write(" {}".format(token))
                 words.add(token)
             vw_file.write("\n")
+            id_to_row[dir_] = row_id
+            row_id += 1
         else:
             logging.error("No txt files in {} directory".format(dir_))
 
 with open(VOCAB_FILE_NAME, "w") as vocab_file:
     print(*sorted(words), file=vocab_file, sep="\n")
+
+with open(ID_TO_ROW_FILE_NAME, "wb") as id_to_row_file:
+    pickle.dump(id_to_row, id_to_row_file)
 # t1 = time()
 # print("Finished in {}m {}s".format(math.floor((t1 - t0) / 60), math.floor((t1 - t0) % 60)))
 #

@@ -85,6 +85,18 @@ class Organization(object):
                 q.append(curUnit.Children[i])
         return result
 
+    def GetAllEmployees(self):
+        employees = set()
+        queue = [self.root]
+
+        while queue:
+            cur_unit = queue.pop()
+            employees.update(cur_unit.Employees)
+            if cur_unit.Children:
+                queue.extend(cur_unit.Children)
+
+        return employees
+
 
 
 

@@ -4,13 +4,14 @@ import pickle
 import time
 import shutil
 import matplotlib.pyplot as plt
+import numpy as np
 
 from scipy import io
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 N_DOCUMENTS = 1000
-N_TOPICS = 10
-N_PASSES = 10
+N_TOPICS = 15
+N_PASSES = 15
 
 DATA_DIR = "../Files/DataPreprocessing/{}_documents".format(N_DOCUMENTS)
 BASE_DIR = "../Files/TopicModeling/{}_documents".format(N_DOCUMENTS)
@@ -73,9 +74,11 @@ print("sparsity phi score:", model_artm._internal_model.score_tracker[
 print("sparsity theta score:", model_artm._internal_model.score_tracker[
     'sparsity_theta_score'].last_value)
 print("perplexity: ", model_artm._internal_model.score_tracker['perplexity_score'].last_value)
-print("coherence: ", model_artm._internal_model
-      .score_tracker['TopTokensCoherenceScore'].average_coherence)
+print("coherence: ", np.mean(model_artm._internal_model
+      .score_tracker['TopTokensCoherenceScore'].average_coherence))
 
-plt.plot(model_artm._internal_model.score_tracker['perplexity_score'].value)
+plt.plot(model_artm._internal_model.score_tracker['perplexity_score'].value, linewidth=2)
+plt.xlabel("iteration")
+plt.ylabel("perplexity")
 plt.show()
 
